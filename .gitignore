@@ -1,20 +1,5 @@
-# Docker volumes y archivos temporales
-mysql_data/
-backend_vendor/
-backend_node_modules/
-backend_storage/
-frontend_node_modules/
-frontend_angular/
-
-# Archivos de entorno sensibles
-.env
-.env.local
-.env.*.local
-*.env
-
-# Logs de Docker
+# Docker - Solo volúmenes nombrados (no las carpetas de código)
 docker-compose.override.yml
-*.log
 
 # Sistema operativo
 .DS_Store
@@ -23,7 +8,6 @@ desktop.ini
 
 # IDEs
 .idea/
-.vscode/
 *.swp
 *.swo
 *~
@@ -31,17 +15,12 @@ desktop.ini
 # Archivos temporales
 *.tmp
 *.temp
-*.bak
-*.backup
 
-# Certificados y claves
-*.pem
-*.key
-*.crt
-*.p12
-
-# Archivos de base de datos locales
+# Archivos de base de datos locales (backups)
 *.sql.gz
 *.sql.zip
 backup/
 dumps/
+
+# NOTA: Los .gitignore específicos de cada proyecto (Laravel y Angular)
+# ya manejan sus propias exclusiones (node_modules, vendor, etc.)
