@@ -32,43 +32,20 @@ services:
     restart: unless-stopped
     working_dir: /var/www
     volumes:
-      # Volumen optimizado para Windows - excluye vendor y node_modules
       - ./proyectoSoftware:/var/www:cached
-      - backend_vendor:/var/www/vendor
-      - backend_node_modules:/var/www/node_modules
-      # Optimización de storage para Windows
-      - backend_storage:/var/www/storage/framework
     ports:
       - "8000:8000"
     env_file:
       - ./proyectoSoftware/.env
     environment:
-      # Override DB_HOST para usar el servicio mysql
       DB_HOST: mysql
-      # Variables para optimizar Laravel en Windows
       COMPOSER_MEMORY_LIMIT: -1
-      WWWUSER: 1000
-      WWWGROUP: 1000
     depends_on:
       mysql:
         condition: service_healthy
     networks:
       - socioconstructor_network
-    command: >
-      sh -c "
-      # Instalar dependencias si no existen
-      if [ ! -d 'vendor' ]; then
-        composer install --no-interaction --prefer-dist --no-dev --optimize-autoloader
-      fi &&
-      # Limpiar cache para desarrollo
-      php artisan config:clear &&
-      php artisan route:clear &&
-      php artisan cache:clear &&
-      # Ejecutar migraciones
-      php artisan migrate --force &&
-      # Iniciar servidor con hot-reload
-      php artisan serve --host=0.0.0.0 --port=8000
-      "
+    entrypoint: ["/bin/bash", "/var/www/docker-entrypoint.sh"]
 
   # Angular Frontend (Optimizado para Windows con hot-reload)
   frontend:
@@ -77,14 +54,10 @@ services:
     restart: unless-stopped
     working_dir: /app
     volumes:
-      # Volumen optimizado para Windows - excluye node_modules
       - ./Frontend/SocioConstructor:/app:cached
-      - frontend_node_modules:/app/node_modules
-      - frontend_angular:/app/.angular
     ports:
       - "4200:4200"
     environment:
-      # Optimizaciones para Angular en Windows
       NODE_ENV: development
       CHOKIDAR_USEPOLLING: "true"
       WATCHPACK_POLLING: "true"
@@ -92,15 +65,7 @@ services:
       - backend
     networks:
       - socioconstructor_network
-    command: >
-      sh -c "
-      # Instalar dependencias si no existen
-      if [ ! -d 'node_modules' ]; then
-        npm install
-      fi &&
-      # Iniciar servidor de desarrollo con hot-reload
-      npm start -- --host 0.0.0.0 --poll 2000 --disable-host-check
-      "
+    entrypoint: ["/bin/sh", "/app/docker-entrypoint.sh"]
 
 networks:
   socioconstructor_network:
@@ -108,15 +73,4 @@ networks:
 
 volumes:
   mysql_data:
-    driver: local
-  # Volúmenes para optimizar rendimiento en Windows
-  backend_vendor:
-    driver: local
-  backend_node_modules:
-    driver: local
-  backend_storage:
-    driver: local
-  frontend_node_modules:
-    driver: local
-  frontend_angular:
     driver: local
