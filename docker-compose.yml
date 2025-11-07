@@ -6,11 +6,11 @@ services:
     image: mysql:8.0
     container_name: socioconstructor_mysql
     restart: unless-stopped
+    env_file:
+      - ./proyectoSoftware/.env
     environment:
-      MYSQL_ROOT_PASSWORD: root123456
-      MYSQL_DATABASE: ferreteria
-      MYSQL_USER: ferreteria_user
-      MYSQL_PASSWORD: ferreteria_pass
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root123456}
+      MYSQL_DATABASE: ${DB_DATABASE:-ferreteria}
     ports:
       - "3306:3306"
     volumes:
@@ -19,7 +19,7 @@ services:
     networks:
       - socioconstructor_network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD:-root123456}"]
       timeout: 20s
       retries: 10
 
@@ -40,13 +40,11 @@ services:
       - backend_storage:/var/www/storage/framework
     ports:
       - "8000:8000"
+    env_file:
+      - ./proyectoSoftware/.env
     environment:
-      DB_CONNECTION: mysql
+      # Override DB_HOST para usar el servicio mysql
       DB_HOST: mysql
-      DB_PORT: 3306
-      DB_DATABASE: ferreteria
-      DB_USERNAME: root
-      DB_PASSWORD: root123456
       # Variables para optimizar Laravel en Windows
       COMPOSER_MEMORY_LIMIT: -1
       WWWUSER: 1000
