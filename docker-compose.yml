@@ -36,6 +36,9 @@ services:
       DB_DATABASE: ferreteria
       DB_USERNAME: root
       DB_PASSWORD: root123456
+      APP_DEBUG: "true"
+      APP_ENV: local
+      LOG_LEVEL: debug
     depends_on:
       mysql:
         condition: service_healthy

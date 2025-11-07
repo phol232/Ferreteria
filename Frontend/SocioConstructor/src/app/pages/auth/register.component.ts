@@ -16,7 +16,7 @@ import { Router, RouterLink } from '@angular/router';
             <span class="text-2xl font-bold text-white">SC</span>
           </div>
           <h1 class="text-3xl font-bold text-gray-900">SocioConstructor</h1>
-          <p class="text-gray-600 mt-2">Crea tu cuenta - ERP Ferretería</p>
+          <p class="text-gray-600 mt-2">Crea tu cuenta - Sistema de Gestión</p>
         </div>
 
         <!-- Register Card -->
