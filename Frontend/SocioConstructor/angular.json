@@ -54,6 +54,9 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "allowedHosts": ["sociofro.tecno-express.shop", "143.110.226.214", "localhost"]
+          },
           "configurations": {
             "production": {
               "buildTarget": "SocioConstructor:build:production"
