@@ -11,4 +11,4 @@ fi
 
 # Iniciar servidor de desarrollo
 echo "✅ Starting Angular development server on port 4200..."
-npm start -- --host 0.0.0.0 --poll 2000 --disable-host-check
+npm start -- --host 0.0.0.0 --poll 2000

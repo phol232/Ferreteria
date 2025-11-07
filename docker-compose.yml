@@ -6,11 +6,9 @@ services:
     image: mysql:8.0
     container_name: socioconstructor_mysql
     restart: unless-stopped
-    env_file:
-      - ./proyectoSoftware/.env
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root123456}
-      MYSQL_DATABASE: ${DB_DATABASE:-ferreteria}
+      MYSQL_ROOT_PASSWORD: root123456
+      MYSQL_DATABASE: ferreteria
     ports:
       - "3306:3306"
     volumes:
@@ -19,53 +17,65 @@ services:
     networks:
       - socioconstructor_network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD:-root123456}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot123456"]
       timeout: 20s
       retries: 10
 
-  # Laravel Backend (Optimizado para Windows con hot-reload)
+  # Laravel Backend
   backend:
-    build:
-      context: ./proyectoSoftware
-      dockerfile: Dockerfile
+    image: php:8.2-cli
     container_name: socioconstructor_backend
     restart: unless-stopped
     working_dir: /var/www
     volumes:
-      - ./proyectoSoftware:/var/www:cached
+      - ./proyectoSoftware:/var/www
     ports:
       - "8000:8000"
-    env_file:
-      - ./proyectoSoftware/.env
     environment:
+      DB_CONNECTION: mysql
       DB_HOST: mysql
-      COMPOSER_MEMORY_LIMIT: -1
+      DB_PORT: 3306
+      DB_DATABASE: ferreteria
+      DB_USERNAME: root
+      DB_PASSWORD: root123456
     depends_on:
       mysql:
         condition: service_healthy
     networks:
       - socioconstructor_network
-    entrypoint: ["/bin/bash", "/var/www/docker-entrypoint.sh"]
+    command: >
+      bash -c "
+      apt-get update && apt-get install -y git curl libpng-dev libonig-dev libxml2-dev zip unzip libzip-dev &&
+      docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip &&
+      curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer &&
+      composer install --no-interaction --prefer-dist --optimize-autoloader &&
+      php artisan config:clear &&
+      php artisan migrate --force &&
+      php artisan serve --host=0.0.0.0 --port=8000
+      "
 
-  # Angular Frontend (Optimizado para Windows con hot-reload)
+  # Angular Frontend
   frontend:
     image: node:20-alpine
     container_name: socioconstructor_frontend
     restart: unless-stopped
     working_dir: /app
     volumes:
-      - ./Frontend/SocioConstructor:/app:cached
+      - ./Frontend/SocioConstructor:/app
     ports:
       - "4200:4200"
     environment:
       NODE_ENV: development
       CHOKIDAR_USEPOLLING: "true"
-      WATCHPACK_POLLING: "true"
     depends_on:
       - backend
     networks:
       - socioconstructor_network
-    entrypoint: ["/bin/sh", "/app/docker-entrypoint.sh"]
+    command: >
+      sh -c "
+      npm install &&
+      npm start -- --host 0.0.0.0 --poll 2000
+      "
 
 networks:
   socioconstructor_network:
