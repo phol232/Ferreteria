@@ -1,0 +1,14 @@
+/* Estilos específicos para estados activos del sidebar */
+a.active {
+  @apply bg-gradient-to-r from-sky-50 to-blue-50 text-sky-600 font-semibold shadow-sm;
+  border-left: 3px solid #0ea5e9;
+}
+
+a.active-sub {
+  @apply bg-sky-50 text-sky-600 font-medium;
+}
+
+/* Animación suave para el dropdown */
+.rotate-90 {
+  transform: rotate(90deg);
+}

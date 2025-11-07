@@ -1,0 +1,127 @@
+<div class="page-header">
+  <div class="breadcrumbs">
+    <span>Inventory</span>
+    <span>›</span>
+    <span>Products</span>
+    <span>›</span>
+    <strong>Table Virello</strong>
+  </div>
+  <div class="header-actions">
+    <button class="icon">🔍</button>
+    <button class="icon">⚙️</button>
+  </div>
+  <h1>Products</h1>
+  </div>
+
+<div class="page-header">
+  <div class="breadcrumbs">
+    <span>Inventory</span>
+    <span>›</span>
+    <span>Products</span>
+    <span>›</span>
+    <strong>Table Virello</strong>
+  </div>
+  <div class="header-actions">
+    <button class="icon">🔍</button>
+    <button class="icon">⚙️</button>
+  </div>
+  <h1>Products</h1>
+</div>
+
+<div class="grid" style="grid-template-columns: 1fr; gap: 16px;">
+  <div class="card">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <div style="width:52px; height:52px; background:#f3f4f6; border-radius:8px;"></div>
+      <div>
+        <div style="font-weight:600;">{{product.name}}</div>
+        <div class="muted">{{product.code}}</div>
+      </div>
+      <span class="pill" style="margin-left:auto;">Active</span>
+    </div>
+    <div class="toggle-row">
+      <div class="item"><span class="muted">Active</span><span class="toggle on"></span></div>
+      <div class="item"><span class="muted">Track Quantity</span><span class="toggle on"></span></div>
+      <div class="item"><span class="muted">POS</span><span class="toggle on"></span></div>
+      <div class="item"><span class="muted">Sell</span><span class="toggle on"></span></div>
+      <div class="item"><span class="muted">Produce</span><span class="toggle"></span></div>
+    </div>
+    <div class="toggle-row">
+      <div class="item"><span class="muted">Active</span><span class="toggle on"></span></div>
+      <div class="item"><span class="muted">Track Quantity</span><span class="toggle on"></span></div>
+      <div class="item"><span class="muted">POS</span><span class="toggle on"></span></div>
+      <div class="item"><span class="muted">Sell</span><span class="toggle on"></span></div>
+      <div class="item"><span class="muted">Produce</span><span class="toggle"></span></div>
+    </div>
+    <div class="grid" style="grid-template-columns: repeat(5, 1fr); margin-top:12px; gap:8px;">
+      <div><div class="muted">Product Code</div><div>{{product.code}}</div></div>
+      <div><div class="muted">Inventory Account</div><div>{{product.account}}</div></div>
+      <div><div class="muted">Category</div><div>{{product.category}}</div></div>
+      <div><div class="muted">Note</div><div>{{product.note}}</div></div>
+      <div><div class="muted">Unit of Measure</div><div>{{product.unit}}</div></div>
+      <div><div class="muted">Tax Rate</div><div>{{product.taxRate}}</div></div>
+      <div><div class="muted">Cost per Unit</div><div>$ {{product.costPerUnit}}</div></div>
+      <div><div class="muted">Minimum Stock</div><div>{{product.minStock}}</div></div>
+    </div>
+  </div>
+
+  <div class="grid kpi-row">
+    <div class="card kpi"><div><div class="muted">Total Sales</div><div>$ 28,473.84</div></div><span class="pill">+108.1%</span></div>
+    <div class="card kpi"><div><div class="muted">Total Gross Profit</div><div>$ 10,959.50</div></div><span class="pill">+43.5%</span></div>
+    <div class="card kpi"><div><div class="muted">Profitability Margin</div><div>38.49%</div></div><span class="pill">+15%</span></div>
+  </div>
+
+  <div class="grid two-col">
+  <div class="card">
+    <div class="section-title"><div class="title"><span>📦</span><span>Stock Overview</span></div><span class="dots">•••</span></div>
+    <div class="grid" style="grid-template-columns: 1fr 1fr;">
+      <div class="subcard">
+        <div class="muted">Total Value</div>
+        <div>$6,240.28</div>
+        <div class="bullets" style="margin-top:8px;">
+          <span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span>
+          <span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span>
+          <span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span>
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </div>
+      </div>
+      <div class="subcard">
+        <div class="muted">Expected Stock</div>
+        <div>12.22K</div>
+        <div class="bullets" style="margin-top:8px;">
+          <span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span>
+          <span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span>
+          <span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span>
+          <span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span>
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="tabs">
+      <div class="tab active">Sales</div>
+      <div class="tab">Manufacturing</div>
+      <div class="tab">Stock Movements</div>
+      <div class="tab">Stocktake</div>
+      <div class="tab">POS</div>
+      <div class="tab">Consumption</div>
+      <div class="tab">Files</div>
+    </div>
+    <div class="section-title" style="margin-top:8px;"><div class="title"><span>🧮</span><span>Show Pricing & Inventory</span></div><span class="dots">⌄</span></div>
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Reference</th><th>Date</th><th>Quantity</th><th>Price</th><th>Margin</th><th>Cost</th><th>Total</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let r of rows">
+        <td>{{r.ref}}</td><td>{{r.date}}</td><td>{{r.qty}}</td><td>USD {{r.price}}</td><td>{{r.margin}}</td><td>USD {{r.cost}}</td><td>USD {{r.total}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  </div>
+</div>
