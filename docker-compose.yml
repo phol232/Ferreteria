@@ -1,0 +1,124 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: socioconstructor_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root123456
+      MYSQL_DATABASE: ferreteria
+      MYSQL_USER: ferreteria_user
+      MYSQL_PASSWORD: ferreteria_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./Database/scheme.sql:/docker-entrypoint-initdb.d/scheme.sql
+    networks:
+      - socioconstructor_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Laravel Backend (Optimizado para Windows con hot-reload)
+  backend:
+    build:
+      context: ./proyectoSoftware
+      dockerfile: Dockerfile
+    container_name: socioconstructor_backend
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      # Volumen optimizado para Windows - excluye vendor y node_modules
+      - ./proyectoSoftware:/var/www:cached
+      - backend_vendor:/var/www/vendor
+      - backend_node_modules:/var/www/node_modules
+      # Optimización de storage para Windows
+      - backend_storage:/var/www/storage/framework
+    ports:
+      - "8000:8000"
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: ferreteria
+      DB_USERNAME: root
+      DB_PASSWORD: root123456
+      # Variables para optimizar Laravel en Windows
+      COMPOSER_MEMORY_LIMIT: -1
+      WWWUSER: 1000
+      WWWGROUP: 1000
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - socioconstructor_network
+    command: >
+      sh -c "
+      # Instalar dependencias si no existen
+      if [ ! -d 'vendor' ]; then
+        composer install --no-interaction --prefer-dist --no-dev --optimize-autoloader
+      fi &&
+      # Limpiar cache para desarrollo
+      php artisan config:clear &&
+      php artisan route:clear &&
+      php artisan cache:clear &&
+      # Ejecutar migraciones
+      php artisan migrate --force &&
+      # Iniciar servidor con hot-reload
+      php artisan serve --host=0.0.0.0 --port=8000
+      "
+
+  # Angular Frontend (Optimizado para Windows con hot-reload)
+  frontend:
+    image: node:20-alpine
+    container_name: socioconstructor_frontend
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      # Volumen optimizado para Windows - excluye node_modules
+      - ./Frontend/SocioConstructor:/app:cached
+      - frontend_node_modules:/app/node_modules
+      - frontend_angular:/app/.angular
+    ports:
+      - "4200:4200"
+    environment:
+      # Optimizaciones para Angular en Windows
+      NODE_ENV: development
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
+    depends_on:
+      - backend
+    networks:
+      - socioconstructor_network
+    command: >
+      sh -c "
+      # Instalar dependencias si no existen
+      if [ ! -d 'node_modules' ]; then
+        npm install
+      fi &&
+      # Iniciar servidor de desarrollo con hot-reload
+      npm start -- --host 0.0.0.0 --poll 2000 --disable-host-check
+      "
+
+networks:
+  socioconstructor_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
+  # Volúmenes para optimizar rendimiento en Windows
+  backend_vendor:
+    driver: local
+  backend_node_modules:
+    driver: local
+  backend_storage:
+    driver: local
+  frontend_node_modules:
+    driver: local
+  frontend_angular:
+    driver: local

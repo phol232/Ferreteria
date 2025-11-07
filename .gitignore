@@ -1,0 +1,47 @@
+# Docker volumes y archivos temporales
+mysql_data/
+backend_vendor/
+backend_node_modules/
+backend_storage/
+frontend_node_modules/
+frontend_angular/
+
+# Archivos de entorno sensibles
+.env
+.env.local
+.env.*.local
+*.env
+
+# Logs de Docker
+docker-compose.override.yml
+*.log
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Archivos temporales
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Certificados y claves
+*.pem
+*.key
+*.crt
+*.p12
+
+# Archivos de base de datos locales
+*.sql.gz
+*.sql.zip
+backup/
+dumps/
