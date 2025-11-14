@@ -1,24 +1,26 @@
-# SocioConstructor - Sistema de Gestión de Ferretería
+# SocioConstructor - Sistema de Gestión Empresarial
 
-Sistema completo de gestión para ferretería con Laravel (Backend) y Angular (Frontend).
+Sistema completo de gestión con Laravel (Backend) y Angular (Frontend).
 
-## 🚀 Inicio Rápido con Docker
+## 🏗️ Arquitectura
 
-### Requisitos Previos
-- Docker Desktop instalado
-- Docker Compose v2
+- **Frontend**: Angular 18 → Desplegado en **Netlify**
+- **Backend**: Laravel 11 API → Desplegado en **VPS con Docker**
+- **Base de Datos**: MySQL 8.0 → En contenedor Docker
 
-### Levantar el Proyecto
+## 🚀 Despliegue en Producción
 
-1. **Clonar el repositorio**
+### Backend (VPS)
+
+1. **Clonar el repositorio en tu VPS**
 ```bash
 git clone <tu-repo>
 cd TESIS_TOVAR
 ```
 
-2. **Configurar variables de entorno (opcional)**
+2. **Configurar variables de entorno**
 
-El proyecto ya viene con un `.env` configurado en `proyectoSoftware/.env`. Si necesitas cambiar las credenciales de la base de datos, edita ese archivo:
+Edita `proyectoSoftware/.env`:
 
 ```env
 DB_CONNECTION=mysql
@@ -27,22 +29,52 @@ DB_PORT=3306
 DB_DATABASE=ferreteria
 DB_USERNAME=root
 DB_PASSWORD=root123456
+APP_ENV=production
+APP_DEBUG=false
 ```
 
-3. **Levantar los contenedores**
+3. **Desplegar en producción**
 ```bash
-docker compose up
+chmod +x deploy-prod.sh
+./deploy-prod.sh
 ```
 
-O en segundo plano:
+**Consumo de recursos**: ~600MB-1GB RAM (Backend + MySQL optimizados)
+
+### Frontend (Netlify)
+
+1. **Sube el código a GitHub**
+2. **Conecta tu repo en Netlify**
+3. **Configuración**:
+   - Base directory: `Frontend/SocioConstructor`
+   - Build command: `npm run build`
+   - Publish directory: `dist/socio-constructor/browser`
+4. **Deploy**
+
+Netlify detectará automáticamente el `netlify.toml`.
+
+## 💻 Desarrollo Local
+
+### Requisitos
+- Docker Desktop
+- Node.js 20+ (para desarrollo del frontend)
+
+### Levantar el proyecto
+
 ```bash
+# Backend + Base de datos
 docker compose up -d
+
+# Frontend (en otra terminal)
+cd Frontend/SocioConstructor
+npm install
+npm start
 ```
 
-4. **Acceder a las aplicaciones**
-- **Frontend Angular**: http://localhost:4200
-- **Backend Laravel**: http://localhost:8000
-- **MySQL**: localhost:3306
+**Acceso local**:
+- Frontend: http://localhost:4200
+- Backend API: http://localhost:8000/api
+- MySQL: localhost:3306
 
 ### Comandos Útiles
 

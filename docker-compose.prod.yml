@@ -1,0 +1,68 @@
+services:
+  # MySQL Database - Optimizado
+  mysql:
+    image: mysql:8.0
+    container_name: socioconstructor_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root123456
+      MYSQL_DATABASE: ferreteria
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./Database/scheme.sql:/docker-entrypoint-initdb.d/scheme.sql
+    networks:
+      - socioconstructor_network
+    command: --default-authentication-plugin=mysql_native_password --max_connections=50 --innodb_buffer_pool_size=128M
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot123456"]
+      timeout: 20s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  # Laravel Backend - Producción
+  backend:
+    build:
+      context: ./proyectoSoftware
+      dockerfile: Dockerfile.prod
+    container_name: socioconstructor_backend
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./proyectoSoftware:/var/www
+    ports:
+      - "8000:8000"
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: ferreteria
+      DB_USERNAME: root
+      DB_PASSWORD: root123456
+      APP_ENV: production
+      APP_DEBUG: "false"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - socioconstructor_network
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+networks:
+  socioconstructor_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local

@@ -1,0 +1,30 @@
+FROM php:8.2-cli-alpine
+
+# Instalar dependencias mínimas
+RUN apk add --no-cache \
+    libpng-dev \
+    libzip-dev \
+    mysql-client \
+    && docker-php-ext-install pdo_mysql zip \
+    && rm -rf /var/cache/apk/*
+
+# Instalar Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www
+
+# Copiar archivos
+COPY . .
+
+# Instalar dependencias de producción
+RUN composer install --no-dev --optimize-autoloader --no-interaction \
+    && php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache
+
+# Limpiar cache de composer
+RUN rm -rf /root/.composer
+
+EXPOSE 8000
+
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
